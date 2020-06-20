@@ -133,7 +133,7 @@ public class SmsController {
         }
         String res = ss.listDataClass(session, dataClass);
         if (res == null || res.equals("")) {
-            res = "Can not create data class of Display"+
+            res = "Can not list data class of"+ dataClass.getScds() +
                     ".\n Or time out.";
         }
         return ResponseEntity.ok(res);
@@ -253,6 +253,23 @@ public class SmsController {
         String res = ss.addVolume(session, volume);
         if (res == null || res.equals("")) {
             res = "Can not Add volume for " + volume.getScds() +
+                    ".\n Or time out.";
+        }
+        return ResponseEntity.ok(res);
+    }
+
+    /**
+     * Delete volume for storage group
+     */
+    @CrossOrigin(origins = "*", allowCredentials = "true")
+    @RequestMapping(value = "/sms/storage-group/delete-volume", method = RequestMethod.POST)
+    public ResponseEntity<String> deleteVolume(@RequestBody StorageGroupVolume volume, HttpSession session) {
+        if (AuthUtil.notLogin(session)) {
+            return ResponseEntity.status(401).body(null);
+        }
+        String res = ss.deleteVolume(session, volume);
+        if (res == null || res.equals("")) {
+            res = "Can not Delete volume for " + volume.getScds() +
                     ".\n Or time out.";
         }
         return ResponseEntity.ok(res);

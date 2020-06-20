@@ -227,16 +227,13 @@ public class SmsService {
         if (prepareTable2(session)) {
             String uid = session.getAttribute("ZOSMF_Account").toString();
             String jcl = getHead(uid) +
-                    "//VALIDAT  EXEC ACBJBAOB,\n" +
-                    "//         PLIB1='SYS1.DGTPLIB',\n" +
+                    "//GENDCLST EXEC  ACBJBAOB,\n" +
+                    "//         PLIB1=SYS1.DGTPLIB,\n" +
                     "//         TABL2=" + uid + ".TEST.ISPTABL\n" +
-                    "//SYSTSIN  DD *\n" +
-                    "PROFILE PREFIX(IBMUSER)\n" +
-                    "DEL VALIDAT.LISTING\n" +
-                    "ISPSTART CMD(ACBQBAO2 +\n" +
-                    "SCDSNAME(" + dataClass.getDcname() + ") TYPE(*) +\n" +
-                    "LISTNAME(VALIDAT.LISTING) +\n" +
-                    "UPDHLVLSCDS()) +\n" +
+                    "//SYSTSIN  DD    *\n" +
+                    "PROFILE NOPREFIX\n" +
+                    "ISPSTART CMD(ACBQBAIC SAVE DCNAMES +\n" +
+                    "SCDS("+ dataClass.getScds() +") DATACLAS("+ dataClass.getDcname() +")) +\n" +
                     "NEWAPPL(DGT) BATSCRW(132) BATSCRD(27) BREDIMAX(3) BDISPMAX(99999999)\n" +
                     "/*\n";
             return js.submitJCL(session, jcl, 104);
@@ -434,6 +431,44 @@ public class SmsService {
                     "//        TABL2=" + uid + ".TEST.ISPTABL\n" +
                     "//SYSUDUMP DD  SYSOUT=*\n" +
                     "//SYSTSIN  DD DSN=&&VOLADDS,DISP=(OLD,DELETE)\n";
+            return js.submitJCL(session, jcl, 109);
+        }
+        return "";
+    }
+
+    /**
+     * Delete volume for storage group
+     * Sample JCL: SYS1.SACBCNTL(ACBJBAIB)
+     */
+    public String deleteVolume(HttpSession session, StorageGroupVolume volume) {
+        if (prepareTable2(session)) {
+            String uid = session.getAttribute("ZOSMF_Account").toString();
+            volume.setScds("'" + volume.getScds() + "'");
+            if(volume.getStatus().equals("")) {
+                // it is actually required
+                volume.setStatus("ENABLE");
+            }
+            String jcl = getHead(uid) +
+                    "//ADDVOL1 EXEC ACBJBAOB,\n" +
+                    "//        PLIB1='SYS1.DGTPLIB',\n" +
+                    "//        TABL2=" + uid + ".TEST.ISPTABL\n" +
+                    "//SYSUDUMP DD  SYSOUT=*\n" +
+                    "//TEMPFILE  DD  DSN=&&VOLDELS,DISP=(NEW,KEEP),\n" +
+                    "//  SPACE=(TRK,(1,1)),LRECL=300,RECFM=F,BLKSIZE=300\n" +
+                    "//SYSTSIN  DD *\n" +
+                    "PROFILE NOPREFIX\n" +
+                    "ISPSTART CMD(ACBQBAI9) +\n" +
+                    "BATSCRW(132) BATSCRD(27) BREDIMAX(3) BDISPMAX(99999999)\n" +
+                    "/*\n" +
+                    "//VOLDEL  DD  *\n" +
+                    fieldsResolver(volume) +
+                    "\n" +
+                    "/*\n" +
+                    "//ADDVOL2 EXEC ACBJBAOB,\n" +
+                    "//        PLIB1='SYS1.DGTPLIB',\n" +
+                    "//        TABL2=" + uid + ".TEST.ISPTABL\n" +
+                    "//SYSUDUMP DD  SYSOUT=*\n" +
+                    "//SYSTSIN  DD DSN=&&VOLDELS,DISP=(OLD,DELETE)\n";
             return js.submitJCL(session, jcl, 109);
         }
         return "";
