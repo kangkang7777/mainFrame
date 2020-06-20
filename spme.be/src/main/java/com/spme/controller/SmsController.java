@@ -140,6 +140,57 @@ public class SmsController {
     }
 
     /**
+     * List storage class of a SCDS
+     */
+    @CrossOrigin(origins = "*", allowCredentials = "true")
+    @RequestMapping(value = "/sms/list-storage-class", method = RequestMethod.POST)
+    public ResponseEntity<String> listDataClass(@RequestBody StorageClass storageClass,HttpSession session) {
+        if (AuthUtil.notLogin(session)) {
+            return ResponseEntity.status(401).body(null);
+        }
+        String res = ss.listStorageClass(session, storageClass);
+        if (res == null || res.equals("")) {
+            res = "Can not list data class of"+ storageClass.getScds() +
+                    ".\n Or time out.";
+        }
+        return ResponseEntity.ok(res);
+    }
+
+    /**
+     * List management class of a SCDS
+     */
+    @CrossOrigin(origins = "*", allowCredentials = "true")
+    @RequestMapping(value = "/sms/list-management-class", method = RequestMethod.POST)
+    public ResponseEntity<String> listDataClass(@RequestBody ManagementClass managementClass,HttpSession session) {
+        if (AuthUtil.notLogin(session)) {
+            return ResponseEntity.status(401).body(null);
+        }
+        String res = ss.listManagementClass(session, managementClass);
+        if (res == null || res.equals("")) {
+            res = "Can not list data class of"+ managementClass.getScds() +
+                    ".\n Or time out.";
+        }
+        return ResponseEntity.ok(res);
+    }
+
+    /**
+     * List storage group of pool type
+     */
+    @CrossOrigin(origins = "*", allowCredentials = "true")
+    @RequestMapping(value = "/sms/list-storage-group/pool", method = RequestMethod.POST)
+    public ResponseEntity<String> listPoolStorageGroup(@RequestBody PoolStorageGroup poolStorageGroup,HttpSession session) {
+        if (AuthUtil.notLogin(session)) {
+            return ResponseEntity.status(401).body(null);
+        }
+        String res = ss.listPoolStorageGroup(session, poolStorageGroup);
+        if (res == null || res.equals("")) {
+            res = "Can not list data class of"+ poolStorageGroup.getScds() +
+                    ".\n Or time out.";
+        }
+        return ResponseEntity.ok(res);
+    }
+
+    /**
      * Create storage class
      */
     @CrossOrigin(origins = "*", allowCredentials = "true")

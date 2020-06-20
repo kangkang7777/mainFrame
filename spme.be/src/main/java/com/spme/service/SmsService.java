@@ -242,6 +242,50 @@ public class SmsService {
     }
 
     /**
+     * List management class
+     * Sample JCL: SYS1.SACBCNTL(ACBJBAIO)
+     */
+    public String listManagementClass(HttpSession session, ManagementClass managementClass) {
+        if (prepareTable2(session)) {
+            String uid = session.getAttribute("ZOSMF_Account").toString();
+            String jcl = getHead(uid) +
+                    "//GENDCLST EXEC  ACBJBAOB,\n" +
+                    "//         PLIB1=SYS1.DGTPLIB,\n" +
+                    "//         TABL2=" + uid + ".TEST.ISPTABL\n" +
+                    "//SYSTSIN  DD    *\n" +
+                    "PROFILE NOPREFIX\n" +
+                    "ISPSTART CMD(ACBQBAID SAVE MCNAMES +\n" +
+                    "SCDS("+ managementClass.getScds() +") MGMTCLAS("+ managementClass.getMgmtclas() +")) +\n" +
+                    "NEWAPPL(DGT) BATSCRW(132) BATSCRD(27) BREDIMAX(3) BDISPMAX(99999999)\n" +
+                    "/*\n";
+            return js.submitJCL(session, jcl, 104);
+        }
+        return "";
+    }
+
+    /**
+     * List storage class
+     * Sample JCL: SYS1.SACBCNTL(ACBJBAIU)
+     */
+    public String listStorageClass(HttpSession session, StorageClass storageClass) {
+        if (prepareTable2(session)) {
+            String uid = session.getAttribute("ZOSMF_Account").toString();
+            String jcl = getHead(uid) +
+                    "//GENDCLST EXEC  ACBJBAOB,\n" +
+                    "//         PLIB1=SYS1.DGTPLIB,\n" +
+                    "//         TABL2=" + uid + ".TEST.ISPTABL\n" +
+                    "//SYSTSIN  DD    *\n" +
+                    "PROFILE NOPREFIX\n" +
+                    "ISPSTART CMD(ACBQBAIF SAVE SCNAMES +\n" +
+                    "SCDS("+ storageClass.getScds() +") STORCLAS("+ storageClass.getStcname() +")) +\n" +
+                    "NEWAPPL(DGT) BATSCRW(132) BATSCRD(27) BREDIMAX(3) BDISPMAX(99999999)\n" +
+                    "/*\n";
+            return js.submitJCL(session, jcl, 104);
+        }
+        return "";
+    }
+
+    /**
      * Define storage class
      * Sample JCL: SYS1.SACBCNTL(ACBJBAS1)
      */
@@ -446,6 +490,28 @@ public class SmsService {
                     "STORGRP(" + poolStorageGroup.getStorgrp() + ") +\n" +
                     ")\n" +
                     "/*";
+            return js.submitJCL(session, jcl, 104);
+        }
+        return "";
+    }
+
+    /**
+     * List storage group of pool type
+     * Sample JCL: SYS1.SACBCNTL(ACBJBAIX)
+     */
+    public String listPoolStorageGroup(HttpSession session, PoolStorageGroup poolStorageGroup) {
+        if (prepareTable2(session)) {
+            String uid = session.getAttribute("ZOSMF_Account").toString();
+            String jcl = getHead(uid) +
+                    "//GENSGLST EXEC  ACBJBAOB,\n" +
+                    "//         PLIB1=SYS1.DGTPLIB,\n" +
+                    "//         TABL2=" + uid + ".TEST.ISPTABL\n" +
+                    "//SYSTSIN  DD    *\n" +
+                    "PROFILE NOPREFIX\n" +
+                    "ISPSTART CMD(ACBQBAIG SAVE SGNAMES +\n" +
+                    "SCDS("+ poolStorageGroup.getScds() +") STORGRP("+ poolStorageGroup.getStorgrp() +" STGTYPE(POOL) SPACEGB(N)) +\n" +
+                    "NEWAPPL(DGT) BATSCRW(132) BATSCRD(27) BREDIMAX(3) BDISPMAX(99999999)\n" +
+                    "/*\n";
             return js.submitJCL(session, jcl, 104);
         }
         return "";
