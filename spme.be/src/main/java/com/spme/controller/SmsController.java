@@ -92,12 +92,12 @@ public class SmsController {
      * Display data class of a SCDS
      */
     @CrossOrigin(origins = "*", allowCredentials = "true")
-    @RequestMapping(value = "/sms/display-data-class", method = RequestMethod.GET)
-    public ResponseEntity<String> displayDataClass(HttpSession session) {
+    @RequestMapping(value = "/sms/display-data-class", method = RequestMethod.POST)
+    public ResponseEntity<String> displayDataClass(@RequestBody DataClass dataClass,HttpSession session) {
         if (AuthUtil.notLogin(session)) {
             return ResponseEntity.status(401).body(null);
         }
-        String res = ss.displayDataClass(session);
+        String res = ss.displayDataClass(session, dataClass);
         if (res == null || res.equals("")) {
             res = "Can not create data class of Display"+
                     ".\n Or time out.";

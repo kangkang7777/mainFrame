@@ -177,7 +177,7 @@ public class SmsService {
      * Display data class
      * Sample JCL: SYS1.SACBCNTL(ACBJBAD1)
      */
-    public String displayDataClass(HttpSession session) {
+    public String displayDataClass(HttpSession session, DataClass dataClass) {
         if (prepareTable2(session)) {
             String uid = session.getAttribute("ZOSMF_Account").toString();
             String jcl = getHead(uid) +
@@ -187,8 +187,9 @@ public class SmsService {
                     "//SYSTSIN  DD *\n" +
                     "PROFILE NOPREFIX\n" +
                     "ISPSTART CMD(ACBQBAD1 DISPLAY +\n" +
-                    "SCDS(" + uid + ".SMS.SCDS) +\n" +
-                    "DCNAME(DCSDS) +\n" +
+//                    "SCDS(" + uid + ".SMS.SCDS) +\n" +
+//                    "DCNAME(DCSDS) +\n" +
+                    fieldsResolver(dataClass) +
                     ") +\n" +
                     "BATSCRW(132) BATSCRD(27) BREDIMAX(3) BDISPMAX(999999)\n" +
                     "/*\n";
