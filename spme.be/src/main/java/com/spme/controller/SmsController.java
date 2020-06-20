@@ -99,6 +99,40 @@ public class SmsController {
         }
         String res = ss.displayDataClass(session, dataClass);
         if (res == null || res.equals("")) {
+            res = "Can not display data class of"+ dataClass.getScds() +
+                    ".\n Or time out.";
+        }
+        return ResponseEntity.ok(res);
+    }
+
+    /**
+     * Alter data class of a SCDS
+     */
+    @CrossOrigin(origins = "*", allowCredentials = "true")
+    @RequestMapping(value = "/sms/alter-data-class", method = RequestMethod.POST)
+    public ResponseEntity<String> alterDataClass(@RequestBody DataClass dataClass,HttpSession session) {
+        if (AuthUtil.notLogin(session)) {
+            return ResponseEntity.status(401).body(null);
+        }
+        String res = ss.alterDataClass(session, dataClass);
+        if (res == null || res.equals("")) {
+            res = "Can not alter data class of"+ dataClass.getScds() +
+                    ".\n Or time out.";
+        }
+        return ResponseEntity.ok(res);
+    }
+
+    /**
+     * List data class of a SCDS
+     */
+    @CrossOrigin(origins = "*", allowCredentials = "true")
+    @RequestMapping(value = "/sms/list-data-class", method = RequestMethod.POST)
+    public ResponseEntity<String> listDataClass(@RequestBody DataClass dataClass,HttpSession session) {
+        if (AuthUtil.notLogin(session)) {
+            return ResponseEntity.status(401).body(null);
+        }
+        String res = ss.listDataClass(session, dataClass);
+        if (res == null || res.equals("")) {
             res = "Can not create data class of Display"+
                     ".\n Or time out.";
         }

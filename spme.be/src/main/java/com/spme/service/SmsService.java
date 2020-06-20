@@ -187,11 +187,57 @@ public class SmsService {
                     "//SYSTSIN  DD *\n" +
                     "PROFILE NOPREFIX\n" +
                     "ISPSTART CMD(ACBQBAD1 DISPLAY +\n" +
-//                    "SCDS(" + uid + ".SMS.SCDS) +\n" +
-//                    "DCNAME(DCSDS) +\n" +
                     fieldsResolver(dataClass) +
                     ") +\n" +
                     "BATSCRW(132) BATSCRD(27) BREDIMAX(3) BDISPMAX(999999)\n" +
+                    "/*\n";
+            return js.submitJCL(session, jcl, 104);
+        }
+        return "";
+    }
+
+    /**
+     * Alter data class
+     * Sample JCL: SYS1.SACBCNTL(ACBJBAD1)
+     */
+    public String alterDataClass(HttpSession session, DataClass dataClass) {
+        if (prepareTable2(session)) {
+            String uid = session.getAttribute("ZOSMF_Account").toString();
+            String jcl = getHead(uid) +
+                    "//STEP2   EXEC ACBJBAOB,\n" +
+                    "//        TABL2=" + uid + ".TEST.ISPTABL\n" +
+                    "//SYSUDUMP DD  SYSOUT=*\n" +
+                    "//SYSTSIN  DD *\n" +
+                    "PROFILE PREFIX(IBMUSER)\n" +
+                    "ISPSTART CMD(ACBQBAD1 ALTER +\n" +
+                    fieldsResolver(dataClass) +
+                    ") +\n" +
+                    "BATSCRW(132) BATSCRD(27) BREDIMAX(3) BDISPMAX(999999)\n" +
+                    "/*\n";
+            return js.submitJCL(session, jcl, 104);
+        }
+        return "";
+    }
+
+    /**
+     * List data class
+     * Sample JCL: SYS1.SACBCNTL(ACBJBAOS)
+     */
+    public String listDataClass(HttpSession session, DataClass dataClass) {
+        if (prepareTable2(session)) {
+            String uid = session.getAttribute("ZOSMF_Account").toString();
+            String jcl = getHead(uid) +
+                    "//VALIDAT  EXEC ACBJBAOB,\n" +
+                    "//         PLIB1='SYS1.DGTPLIB',\n" +
+                    "//         TABL2=" + uid + ".TEST.ISPTABL\n" +
+                    "//SYSTSIN  DD *\n" +
+                    "PROFILE PREFIX(IBMUSER)\n" +
+                    "DEL VALIDAT.LISTING\n" +
+                    "ISPSTART CMD(ACBQBAO2 +\n" +
+                    "SCDSNAME(" + dataClass.getDcname() + ") TYPE(*) +\n" +
+                    "LISTNAME(VALIDAT.LISTING) +\n" +
+                    "UPDHLVLSCDS()) +\n" +
+                    "NEWAPPL(DGT) BATSCRW(132) BATSCRD(27) BREDIMAX(3) BDISPMAX(99999999)\n" +
                     "/*\n";
             return js.submitJCL(session, jcl, 104);
         }
