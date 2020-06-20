@@ -208,7 +208,7 @@ public class SmsService {
                     "//        TABL2=" + uid + ".TEST.ISPTABL\n" +
                     "//SYSUDUMP DD  SYSOUT=*\n" +
                     "//SYSTSIN  DD *\n" +
-                    "PROFILE PREFIX(IBMUSER)\n" +
+                    "PROFILE NOPREFIX\n" +
                     "ISPSTART CMD(ACBQBAD1 ALTER +\n" +
                     fieldsResolver(dataClass) +
                     ") +\n" +
@@ -379,7 +379,7 @@ public class SmsService {
                     "//TEMPFILE  DD  DSN=&&TEMPFILE,DISP=(MOD,PASS),\n" +
                     "//  SPACE=(TRK,(1,1)),LRECL=300,RECFM=F,BLKSIZE=300\n" +
                     "//SYSTSIN  DD *\n" +
-                    "PROFILE PREFIX(IBMUSER)\n" +
+                    "PROFILE NOPREFIX\n" +
                     "ISPSTART CMD(ACBQBAJ1 ALTER +\n" +
                     fieldsResolver(managementClass) +
                     ")\n" +
@@ -530,7 +530,7 @@ public class SmsService {
                     "//        TABL2=" + uid + ".TEST.ISPTABL\n" +
                     "//SYSUDUMP DD  SYSOUT=*\n" +
                     "//SYSTSIN  DD *\n" +
-                    "PROFILE PREFIX(IBMUSER)\n" +
+                    "PROFILE NOPREFIX\n" +
                     "ISPSTART CMD(ACBQBAJ2 ALTER +\n" +
                     fieldsResolver(poolStorageGroup) +
                     ")\n" +

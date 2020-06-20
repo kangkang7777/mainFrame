@@ -110,7 +110,7 @@ export default {
         return;
       }
       this.isLoading = true;
-      Axios.post("/api/sms/list-storage-group/pool", params)
+      Axios.post("/api/sms/display-storage-group/pool", params)
         .then(res => {
           this.showResult(res.data);
         })
