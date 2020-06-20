@@ -509,7 +509,7 @@ public class SmsService {
                     "//SYSTSIN  DD    *\n" +
                     "PROFILE NOPREFIX\n" +
                     "ISPSTART CMD(ACBQBAIG SAVE SGNAMES +\n" +
-                    "SCDS("+ poolStorageGroup.getScds() +") STORGRP("+ poolStorageGroup.getStorgrp() +" STGTYPE(POOL) SPACEGB(N)) +\n" +
+                    "SCDS(" + poolStorageGroup.getScds() + ") STORGRP("+ poolStorageGroup.getStorgrp() +") STGTYPE(POOL) SPACEGB(N))+\n" +
                     "NEWAPPL(DGT) BATSCRW(132) BATSCRD(27) BREDIMAX(3) BDISPMAX(99999999)\n" +
                     "/*\n";
             return js.submitJCL(session, jcl, 104);
