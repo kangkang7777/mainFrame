@@ -98,7 +98,7 @@ export default {
       };
       this.isLoading = true;
       //Axios.post("/api/sms/display-management-class", params)
-      Axios.post("/api/sms/display-management-class", params)
+      Axios.post("/api/sms/alter-management-class", params)
         .then(res => {
           this.showResult(res.data);
         })

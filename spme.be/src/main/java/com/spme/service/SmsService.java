@@ -323,6 +323,37 @@ public class SmsService {
     }
 
     /**
+     * Alter management class
+     * Sample JCL: SYS1.SACBCNTL(ACBJBAJ1)
+     */
+    public String alterManagementClass(HttpSession session, ManagementClass managementClass) {
+        if (prepareTable2(session)) {
+            String uid = session.getAttribute("ZOSMF_Account").toString();
+            // add quotes to avoid prefix
+            managementClass.setScds("'" + managementClass.getScds() + "'");
+            String jcl = getHead(uid) +
+                    "//STEP1   EXEC ACBJBAOB,\n" +
+                    "//        TABL2=" + uid + ".TEST.ISPTABL\n" +
+                    "//SYSUDUMP DD  SYSOUT=*\n" +
+                    "//TEMPFILE  DD  DSN=&&TEMPFILE,DISP=(MOD,PASS),\n" +
+                    "//  SPACE=(TRK,(1,1)),LRECL=300,RECFM=F,BLKSIZE=300\n" +
+                    "//SYSTSIN  DD *\n" +
+                    "PROFILE PREFIX(IBMUSER)\n" +
+                    "ISPSTART CMD(ACBQBAJ1 ALTER +\n" +
+                    fieldsResolver(managementClass) +
+                    ")\n" +
+                    "/*\n" +
+                    "//STEP2   EXEC ACBJBAOB,\n" +
+                    "//        TABL2=" + uid + ".TEST.ISPTABL\n" +
+                    "//SYSUDUMP DD  SYSOUT=*\n" +
+                    "//SYSTSIN  DD DSN=&&TEMPFILE,DISP=(OLD,DELETE,DELETE)\n" +
+                    "/*";
+            return js.submitJCL(session, jcl, 108);
+        }
+        return "";
+    }
+
+    /**
      * Display storage class
      * Sample JCL: SYS1.SACBCNTL(ACBJBAS1)
      */
@@ -341,6 +372,28 @@ public class SmsService {
                     fieldsResolver(storageClass) +
                     ") +\n" +
                     "BATSCRW(132) BATSCRD(27) BREDIMAX(3) BDISPMAX(999999)\n" +
+                    "/*\n";
+            return js.submitJCL(session, jcl, 104);
+        }
+        return "";
+    }
+
+    /**
+     * Alter storage class
+     * Sample JCL: SYS1.SACBCNTL(ACBJBAS1)
+     */
+    public String alterStorageClass(HttpSession session, StorageClass storageClass) {
+        if (prepareTable2(session)) {
+            String uid = session.getAttribute("ZOSMF_Account").toString();
+            String jcl = getHead(uid) +
+                    "//STEP1   EXEC ACBJBAOB,\n" +
+                    "//        TABL2=" + uid + ".TEST.ISPTABL\n" +
+                    "//SYSUDUMP DD  SYSOUT=*\n" +
+                    "//SYSTSIN  DD *\n" +
+                    "PROFILE NOPREFIX\n" +
+                    "ISPSTART CMD(ACBQBAS1 ALTER +\n" +
+                    fieldsResolver(storageClass) +
+                    ")\n" +
                     "/*\n";
             return js.submitJCL(session, jcl, 104);
         }
@@ -397,6 +450,36 @@ public class SmsService {
                     ")\n" +
                     "/*";
             return js.submitJCL(session, jcl, 104);
+        }
+        return "";
+    }
+
+    /**
+     * Define storage group of pool type
+     * Sample JCL: SYS1.SACBCNTL(ACBJBAJ2)
+     */
+    public String alterPoolStorageGroup(HttpSession session, PoolStorageGroup poolStorageGroup) {
+        if (prepareTable2(session)) {
+            String uid = session.getAttribute("ZOSMF_Account").toString();
+            poolStorageGroup.setScds("'" + poolStorageGroup.getScds() + "'");
+            String jcl = getHead(uid) +
+                    "//STEP1   EXEC ACBJBAOB,\n" +
+                    "//        TABL2=" + uid + ".TEST.ISPTABL\n" +
+                    "//SYSUDUMP DD  SYSOUT=*\n" +
+                    "//SYSTSIN  DD *\n" +
+                    "PROFILE PREFIX(IBMUSER)\n" +
+                    "ISPSTART CMD(ACBQBAJ2 ALTER +\n" +
+                    fieldsResolver(poolStorageGroup) +
+                    ")\n" +
+                    "/*\n" +
+                    "//TEMPFILE  DD  DSN=&&TEMPFILE,DISP=(MOD,PASS),\n" +
+                    "//  SPACE=(TRK,(1,1)),LRECL=300,RECFM=F,BLKSIZE=300\n" +
+                    "//STEP2   EXEC ACBJBAOB,\n" +
+                    "//        TABL2=" + uid + ".TEST.ISPTABL\n" +
+                    "//SYSUDUMP DD  SYSOUT=*\n" +
+                    "//SYSTSIN  DD DSN=&&TEMPFILE,DISP=(OLD,DELETE,DELETE)\n" +
+                    "/*";
+            return js.submitJCL(session, jcl, 108);
         }
         return "";
     }

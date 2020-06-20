@@ -191,6 +191,23 @@ public class SmsController {
     }
 
     /**
+     * Create management class
+     */
+    @CrossOrigin(origins = "*", allowCredentials = "true")
+    @RequestMapping(value = "/sms/alter-management-class", method = RequestMethod.POST)
+    public ResponseEntity<String> alterManagementClass(@RequestBody ManagementClass managementClass, HttpSession session) {
+        if (AuthUtil.notLogin(session)) {
+            return ResponseEntity.status(401).body(null);
+        }
+        String res = ss.alterManagementClass(session, managementClass);
+        if (res == null || res.equals("")) {
+            res = "Can not create management class of " + managementClass.getScds() +
+                    ".\n Or time out.";
+        }
+        return ResponseEntity.ok(res);
+    }
+
+    /**
      * Create storage group of pool type
      */
     @CrossOrigin(origins = "*", allowCredentials = "true")
@@ -225,6 +242,23 @@ public class SmsController {
     }
 
     /**
+     * Display storage group of pool type
+     */
+    @CrossOrigin(origins = "*", allowCredentials = "true")
+    @RequestMapping(value = "/sms/alter-storage-group/pool", method = RequestMethod.POST)
+    public ResponseEntity<String> alterPoolStorageGroup(@RequestBody PoolStorageGroup poolStorageGroup, HttpSession session) {
+        if (AuthUtil.notLogin(session)) {
+            return ResponseEntity.status(401).body(null);
+        }
+        String res = ss.alterPoolStorageGroup(session, poolStorageGroup);
+        if (res == null || res.equals("")) {
+            res = "Can not create pool storage group of " + poolStorageGroup.getScds() +
+                    ".\n Or time out.";
+        }
+        return ResponseEntity.ok(res);
+    }
+
+    /**
      * Display Storage class of a SCDS
      */
     @CrossOrigin(origins = "*", allowCredentials = "true")
@@ -234,6 +268,23 @@ public class SmsController {
             return ResponseEntity.status(401).body(null);
         }
         String res = ss.displayStorageClass(session, storageClass);
+        if (res == null || res.equals("")) {
+            res = "Can not create storage class of Display"+
+                    ".\n Or time out.";
+        }
+        return ResponseEntity.ok(res);
+    }
+
+    /**
+     * Display Storage class of a SCDS
+     */
+    @CrossOrigin(origins = "*", allowCredentials = "true")
+    @RequestMapping(value = "/sms/alter-storage-class", method = RequestMethod.POST)
+    public ResponseEntity<String> alterStorageClass(@RequestBody StorageClass storageClass,HttpSession session) {
+        if (AuthUtil.notLogin(session)) {
+            return ResponseEntity.status(401).body(null);
+        }
+        String res = ss.alterStorageClass(session, storageClass);
         if (res == null || res.equals("")) {
             res = "Can not create storage class of Display"+
                     ".\n Or time out.";
