@@ -174,6 +174,30 @@ public class SmsService {
     }
 
     /**
+     * Display data class
+     * Sample JCL: SYS1.SACBCNTL(ACBJBAD1)
+     */
+    public String displayDataClass(HttpSession session) {
+        if (prepareTable2(session)) {
+            String uid = session.getAttribute("ZOSMF_Account").toString();
+            String jcl = getHead(uid) +
+                    "//STEP2   EXEC ACBJBAOB,\n" +
+                    "//        TABL2=" + uid + ".TEST.ISPTABL\n" +
+                    "//SYSUDUMP DD  SYSOUT=*\n" +
+                    "//SYSTSIN  DD *\n" +
+                    "PROFILE NOPREFIX\n" +
+                    "ISPSTART CMD(ACBQBAD1 DISPLAY +\n" +
+                    "SCDS(" + uid + ".SMS.SCDS) +\n" +
+                    "DCNAME(DCSDS) +\n" +
+                    ") +\n" +
+                    "BATSCRW(132) BATSCRD(27) BREDIMAX(3) BDISPMAX(999999)\n" +
+                    "/*\n";
+            return js.submitJCL(session, jcl, 104);
+        }
+        return "";
+    }
+
+    /**
      * Define storage class
      * Sample JCL: SYS1.SACBCNTL(ACBJBAS1)
      */

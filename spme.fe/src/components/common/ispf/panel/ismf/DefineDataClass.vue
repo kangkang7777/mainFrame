@@ -226,7 +226,8 @@ export default {
         frspcca: this.frspcca.trim()
       };
       this.isLoading = true;
-      Axios.post("/api/sms/data-class", params)
+      //Axios.post("/api/sms/data-class", params)
+      Axios.get("/api/sms/display-data-class", params)
         .then(res => {
           this.showResult(res.data);
         })
