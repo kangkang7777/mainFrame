@@ -378,6 +378,30 @@ public class SmsService {
     }
 
     /**
+     * Display storage group of pool type
+     * Sample JCL: SYS1.SACBCNTL(ACBJBAJ2)
+     */
+    public String displayPoolStorageGroup(HttpSession session, PoolStorageGroup poolStorageGroup) {
+        if (prepareTable2(session)) {
+            String uid = session.getAttribute("ZOSMF_Account").toString();
+            poolStorageGroup.setScds("'" + poolStorageGroup.getScds() + "'");
+            String jcl = getHead(uid) +
+                    "//STEP1   EXEC ACBJBAOB,\n" +
+                    "//        TABL2=" + uid + ".TEST.ISPTABL\n" +
+                    "//SYSUDUMP DD  SYSOUT=*\n" +
+                    "//SYSTSIN  DD *\n" +
+                    "PROFILE PREFIX(IBMUSER)\n" +
+                    "ISPSTART CMD(ACBQBAJ2 DISPLAY +\n" +
+                    "SCDS(" + poolStorageGroup.getScds() + ") +\n" +
+                    "STORGRP(" + poolStorageGroup.getStorgrp() + ") +\n" +
+                    ")\n" +
+                    "/*";
+            return js.submitJCL(session, jcl, 104);
+        }
+        return "";
+    }
+
+    /**
      * Add volume for storage group
      * Sample JCL: SYS1.SACBCNTL(ACBJBAIB)
      */

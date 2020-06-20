@@ -208,6 +208,23 @@ public class SmsController {
     }
 
     /**
+     * Display storage group of pool type
+     */
+    @CrossOrigin(origins = "*", allowCredentials = "true")
+    @RequestMapping(value = "/sms/display-storage-group/pool", method = RequestMethod.POST)
+    public ResponseEntity<String> displayPoolStorageGroup(@RequestBody PoolStorageGroup poolStorageGroup, HttpSession session) {
+        if (AuthUtil.notLogin(session)) {
+            return ResponseEntity.status(401).body(null);
+        }
+        String res = ss.displayPoolStorageGroup(session, poolStorageGroup);
+        if (res == null || res.equals("")) {
+            res = "Can not create pool storage group of " + poolStorageGroup.getScds() +
+                    ".\n Or time out.";
+        }
+        return ResponseEntity.ok(res);
+    }
+
+    /**
      * Display Storage class of a SCDS
      */
     @CrossOrigin(origins = "*", allowCredentials = "true")
