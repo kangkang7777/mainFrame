@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/precache-manifest.811b515fe6f2192cb4fd6b1061dc0f71.js"
+  "/precache-manifest.3c9b12eb0c1d418f683b931dadfd1f0f.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "spme.fe"});
