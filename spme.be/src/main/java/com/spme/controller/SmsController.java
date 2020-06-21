@@ -286,14 +286,14 @@ public class SmsController {
         }
         String res = ss.displayPoolStorageGroup(session, poolStorageGroup);
         if (res == null || res.equals("")) {
-            res = "Can not create pool storage group of " + poolStorageGroup.getScds() +
+            res = "Can not display pool storage group of " + poolStorageGroup.getScds() +
                     ".\n Or time out.";
         }
         return ResponseEntity.ok(res);
     }
 
     /**
-     * Display storage group of pool type
+     * Alter storage group of pool type
      */
     @CrossOrigin(origins = "*", allowCredentials = "true")
     @RequestMapping(value = "/sms/alter-storage-group/pool", method = RequestMethod.POST)
@@ -303,7 +303,7 @@ public class SmsController {
         }
         String res = ss.alterPoolStorageGroup(session, poolStorageGroup);
         if (res == null || res.equals("")) {
-            res = "Can not create pool storage group of " + poolStorageGroup.getScds() +
+            res = "Can not alter pool storage group of " + poolStorageGroup.getScds() +
                     ".\n Or time out.";
         }
         return ResponseEntity.ok(res);
@@ -320,14 +320,14 @@ public class SmsController {
         }
         String res = ss.displayStorageClass(session, storageClass);
         if (res == null || res.equals("")) {
-            res = "Can not create storage class of Display"+
+            res = "Can not display pool storage class of Display"+
                     ".\n Or time out.";
         }
         return ResponseEntity.ok(res);
     }
 
     /**
-     * Display Storage class of a SCDS
+     * Alter Storage class of a SCDS
      */
     @CrossOrigin(origins = "*", allowCredentials = "true")
     @RequestMapping(value = "/sms/alter-storage-class", method = RequestMethod.POST)
@@ -337,7 +337,7 @@ public class SmsController {
         }
         String res = ss.alterStorageClass(session, storageClass);
         if (res == null || res.equals("")) {
-            res = "Can not create storage class of Display"+
+            res = "Can not alter storage class of Display"+
                     ".\n Or time out.";
         }
         return ResponseEntity.ok(res);
