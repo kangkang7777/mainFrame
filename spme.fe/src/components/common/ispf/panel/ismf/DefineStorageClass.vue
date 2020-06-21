@@ -167,7 +167,7 @@ export default {
         vrsning: this.vrsning.trim()
       };
       this.isLoading = true;
-      Axios.post("/api/sms/display-storage-class", params)
+      Axios.post("/api/sms/list-storage-class", params)
         .then(res => {
           this.showResult(res.data);
         })
