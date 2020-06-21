@@ -220,8 +220,72 @@ public class SmsService {
     }
 
     /**
+     * List management class
+     * Sample JCL: SYS1.SACBCNTL(ACBJBAIO)
+     */
+    public String listManagementClass(HttpSession session, ManagementClass managementClass) {
+        if (prepareTable2(session)) {
+            String uid = session.getAttribute("ZOSMF_Account").toString();
+            String jcl = getHead(uid) +
+                    "//GENMCLST EXEC  ACBJBAOB,\n" +
+                    "//         PLIB1=SYS1.DGTPLIB,\n" +
+                    "//         TABL2=" + uid + ".TEST.ISPTABL\n" +
+                    "//SYSTSIN  DD    *\n" +
+                    "//SYSPRINT DD    SYSOUT=*\n" +
+                    "PROFILE NOPREFIX\n" +
+                    "ISPSTART CMD(ACBQBAID SAVE MCNAMES +\n" +
+                    "SCDS("+ managementClass.getScds() +") MGMTCLAS("+ managementClass.getMgmtclas() +")) +\n" +
+                    "NEWAPPL(DGT) BATSCRW(132) BATSCRD(27) BREDIMAX(3) BDISPMAX(99999999)\n" +
+                    "/*\n" +
+                    "//DELREPDS EXEC  PGM=IDCAMS\n" +
+                    "//SYSPRINT DD    SYSOUT=*\n" +
+                    "//SYSIN    DD    *\n" +
+                    " DELETE MCNAMS.REPORT\n" +
+                    "/*\n" +
+                    "//ALCISPFL EXEC  PGM=IEFBR14\n" +
+                    "//ISPFILE  DD    DSN=MCNAMS.REPORT,DISP=(NEW,CATLG),\n" +
+                    "//         BLKSIZE=0,SPACE=(TRK,(3,1)),RECFM=FBA,LRECL=133,UNIT=SYSDA\n" +
+                    "//SYSPRINT DD    SYSOUT=*\n" +
+                    "//SYSIN    DD    *\n" +
+                    "/*\n" +
+                    "//GENMCREP EXEC  ACBJBAOB,\n" +
+                    "//         PLIB1=SYS1.DGTPLIB,\n" +
+                    "//         TABL2=" + uid + ".TEST.ISPTABL\n" +
+                    "//ISPFILE  DD    DSN=MCNAMS.REPORT,DISP=OLD\n" +
+                    "//SYSTSIN  DD    *\n" +
+                    "PROFILE NOPREFIX\n" +
+                    "ISPSTART CMD(ACBQBARD MCNAMES) +\n" +
+                    "BATSCRW(132) BATSCRD(27) BREDIMAX(3) BDISPMAX(99999999)\n" +
+                    "/*\n" +
+                    "//SYSIN    DD    *\n" +
+                    "MGMTCLAS\n" +
+                    "EXPNONUSE\n" +
+                    "EXPDATE\n" +
+                    "RETLMIT\n" +
+                    "PARTIALREL\n" +
+                    "PRIMDAYS\n" +
+                    "L1DAYS\n" +
+                    "MIGTYPE\n" +
+                    "NOGDGPRI\n" +
+                    "RLDOFGDSAC\n" +
+                    "BKPFREQ\n" +
+                    "NOBKPSDSE\n" +
+                    "NOBKPSDSD\n" +
+                    "TITLE=STATUS OF MANAGEMENT CLASSES AS ON 07/01/12\n" +
+                    "/*\n" +
+                    "//CPYMCREP EXEC  PGM=IEBGENER\n" +
+                    "//SYSUT1   DD    DSN=MCNAMS.REPORT,DISP=SHR\n" +
+                    "//SYSUT2   DD    SYSOUT=*\n" +
+                    "//SYSIN    DD    DUMMY\n" +
+                    "//SYSPRINT DD    SYSOUT=*\n";
+            return js.submitJCL(session, jcl, 117);
+        }
+        return "";
+    }
+
+    /**
      * List data class
-     * Sample JCL: SYS1.SACBCNTL(ACBJBAOS)
+     * Sample JCL: SYS1.SACBCNTL(ACBJBAIL)
      */
     public String listDataClass(HttpSession session, DataClass dataClass) {
         if (prepareTable2(session)) {
@@ -235,30 +299,61 @@ public class SmsService {
                     "ISPSTART CMD(ACBQBAIC SAVE DCNAMES +\n" +
                     "SCDS("+ dataClass.getScds() +") DATACLAS("+ dataClass.getDcname() +")) +\n" +
                     "NEWAPPL(DGT) BATSCRW(132) BATSCRD(27) BREDIMAX(3) BDISPMAX(99999999)\n" +
-                    "/*\n";
-            return js.submitJCL(session, jcl, 104);
-        }
-        return "";
-    }
-
-    /**
-     * List management class
-     * Sample JCL: SYS1.SACBCNTL(ACBJBAIO)
-     */
-    public String listManagementClass(HttpSession session, ManagementClass managementClass) {
-        if (prepareTable2(session)) {
-            String uid = session.getAttribute("ZOSMF_Account").toString();
-            String jcl = getHead(uid) +
-                    "//GENDCLST EXEC  ACBJBAOB,\n" +
+                    "/*\n" +
+                    "//DELREPDS EXEC  PGM=IDCAMS\n" +
+                    "//SYSPRINT DD    SYSOUT=*\n" +
+                    "//SYSIN    DD    *\n" +
+                    " DELETE DCNAMS.REPORT\n" +
+                    "/*\n" +
+                    "//ALCISPFL EXEC  PGM=IEFBR14\n" +
+                    "//ISPFILE  DD    DSN=DCNAMS.REPORT,DISP=(NEW,CATLG),\n" +
+                    "//         BLKSIZE=0,SPACE=(TRK,(3,1)),RECFM=FBA,LRECL=133,UNIT=SYSDA\n" +
+                    "//SYSPRINT DD    SYSOUT=*\n" +
+                    "//SYSIN    DD    *\n" +
+                    "/*\n" +
+                    "//GENDCREP EXEC  ACBJBAOB,\n" +
                     "//         PLIB1=SYS1.DGTPLIB,\n" +
                     "//         TABL2=" + uid + ".TEST.ISPTABL\n" +
+                    "//ISPFILE  DD    DSN=DCNAMS.REPORT,DISP=OLD\n" +
                     "//SYSTSIN  DD    *\n" +
                     "PROFILE NOPREFIX\n" +
-                    "ISPSTART CMD(ACBQBAID SAVE MCNAMES +\n" +
-                    "SCDS("+ managementClass.getScds() +") MGMTCLAS("+ managementClass.getMgmtclas() +")) +\n" +
-                    "NEWAPPL(DGT) BATSCRW(132) BATSCRD(27) BREDIMAX(3) BDISPMAX(99999999)\n" +
-                    "/*\n";
-            return js.submitJCL(session, jcl, 104);
+                    "ISPSTART CMD(ACBQBARB DCNAMES) +\n" +
+                    "BATSCRW(132) BATSCRD(27) BREDIMAX(3) BDISPMAX(99999999)\n" +
+                    "/*\n" +
+                    "//SYSIN    DD    *\n" +
+                    "DATACLAS\n" +
+                    "RECORG\n" +
+                    "RECFM\n" +
+                    "LRECL\n" +
+                    "KEYLEN\n" +
+                    "KEYOFF\n" +
+                    "AVGREC\n" +
+                    "AVGVL\n" +
+                    "SPCEPRI\n" +
+                    "SPACESEC\n" +
+                    "SPACEDIR\n" +
+                    "EXPDATE\n" +
+                    "VOLCNT\n" +
+                    "ADDVOLAMNT\n" +
+                    "MAXVOL\n" +
+                    "SMBVSP\n" +
+                    "FRLOG\n" +
+                    "RLSCF\n" +
+                    "PEFSCLG\n" +
+                    "PERFSEG\n" +
+                    "OVERRIDE\n" +
+                    "SDB\n" +
+                    "EATTR\n" +
+                    "RECLAIMCA\n" +
+                    "LOGREPL\n" +
+                    "RMODE31\n" +
+                    "TITLE=STATUS OF DATA CLASSES  AS ON 12/01/12\n" +
+                    "//CPYDCREP EXEC  PGM=IEBGENER\n" +
+                    "//SYSUT1   DD    DSN=DCNAMS.REPORT,DISP=SHR\n" +
+                    "//SYSUT2   DD    SYSOUT=*\n" +
+                    "//SYSIN    DD    DUMMY\n" +
+                    "//SYSPRINT DD    SYSOUT=*\n";
+            return js.submitJCL(session, jcl, 116);
         }
         return "";
     }
@@ -271,16 +366,59 @@ public class SmsService {
         if (prepareTable2(session)) {
             String uid = session.getAttribute("ZOSMF_Account").toString();
             String jcl = getHead(uid) +
-                    "//GENDCLST EXEC  ACBJBAOB,\n" +
+                    "//GENSCLST EXEC  ACBJBAOB,\n" +
                     "//         PLIB1=SYS1.DGTPLIB,\n" +
-                    "//         TABL2=" + uid + ".TEST.ISPTABL\n" +
+                    "//         TABL2=ST027.TEST.ISPTABL\n" +
                     "//SYSTSIN  DD    *\n" +
                     "PROFILE NOPREFIX\n" +
                     "ISPSTART CMD(ACBQBAIF SAVE SCNAMES +\n" +
-                    "SCDS("+ storageClass.getScds() +") STORCLAS("+ storageClass.getStcname() +")) +\n" +
+                    "SCDS(ST027.SMS.SCDS) STORCLAS(SCTEST)) +\n" +
                     "NEWAPPL(DGT) BATSCRW(132) BATSCRD(27) BREDIMAX(3) BDISPMAX(99999999)\n" +
-                    "/*\n";
-            return js.submitJCL(session, jcl, 104);
+                    "/*\n" +
+                    "//DELREPDS EXEC  PGM=IDCAMS\n" +
+                    "//SYSPRINT DD    SYSOUT=*\n" +
+                    "//SYSIN    DD    *\n" +
+                    " DELETE SCNAMS.REPORT\n" +
+                    "/*\n" +
+                    "//ALCISPFL EXEC  PGM=IEFBR14\n" +
+                    "//ISPFILE  DD    DSN=SCNAMS.REPORT,DISP=(NEW,CATLG),\n" +
+                    "//         BLKSIZE=0,SPACE=(TRK,(3,1)),RECFM=FBA,LRECL=133,UNIT=SYSDA\n" +
+                    "//SYSPRINT DD    SYSOUT=*\n" +
+                    "//SYSIN    DD    *\n" +
+                    "/*\n" +
+                    "//GENSCREP EXEC  ACBJBAOB,\n" +
+                    "//         PLIB1=SYS1.DGTPLIB,\n" +
+                    "//         TABL2=ST027.TEST.ISPTABL\n" +
+                    "//ISPFILE  DD    DSN=SCNAMS.REPORT,DISP=OLD\n" +
+                    "//SYSTSIN  DD    *\n" +
+                    "PROFILE NOPREFIX\n" +
+                    "ISPSTART CMD(ACBQBARH SCNAMES) +\n" +
+                    "BATSCRW(132) BATSCRD(27) BREDIMAX(3) BDISPMAX(99999999)\n" +
+                    "/*\n" +
+                    "//SYSIN    DD    *\n" +
+                    "STORCLAS\n" +
+                    "DIRRESP\n" +
+                    "DBIS\n" +
+                    "SEQRESP\n" +
+                    "SBIS\n" +
+                    "AVALBLTY\n" +
+                    "GRNTSPC\n" +
+                    "LSTMDUID\n" +
+                    "LSTMODDATE\n" +
+                    "LSTMDTIME\n" +
+                    "GRNTSNCWR\n" +
+                    "INACCRSP\n" +
+                    "MULTITSG\n" +
+                    "PAVCAP\n" +
+                    "OAMLVL\n" +
+                    "DISCSPHERE\n" +
+                    "TITLE=STATUS OF STORAGE CLASSES  AS ON 11/01/11\n" +
+                    "//CPYSCREP EXEC  PGM=IEBGENER\n" +
+                    "//SYSUT1   DD    DSN=SCNAMS.REPORT,DISP=SHR\n" +
+                    "//SYSUT2   DD    SYSOUT=*\n" +
+                    "//SYSIN    DD    DUMMY\n" +
+                    "//SYSPRINT DD    SYSOUT=* \n";
+            return js.submitJCL(session, jcl, 116);
         }
         return "";
     }
@@ -509,10 +647,61 @@ public class SmsService {
                     "//SYSTSIN  DD    *\n" +
                     "PROFILE NOPREFIX\n" +
                     "ISPSTART CMD(ACBQBAIG SAVE SGNAMES +\n" +
-                    "SCDS(" + poolStorageGroup.getScds() + ") STORGRP("+ poolStorageGroup.getStorgrp() +") STGTYPE(POOL) SPACEGB(N))+\n" +
+                    "SCDS(" + poolStorageGroup.getScds() + ") STORGRP(" + poolStorageGroup.getStorgrp() + ") STGTYPE(POOL) SPACEGB(N))+\n" +
                     "NEWAPPL(DGT) BATSCRW(132) BATSCRD(27) BREDIMAX(3) BDISPMAX(99999999)\n" +
-                    "/*\n";
-            return js.submitJCL(session, jcl, 104);
+                    "/*\n" +
+                    "//DELREPDS EXEC  PGM=IDCAMS\n" +
+                    "//SYSPRINT DD    SYSOUT=*\n" +
+                    "//SYSIN    DD    *\n" +
+                    " DELETE SGNAMS.REPORT\n" +
+                    "/*\n" +
+                    "//ALCISPFL EXEC  PGM=IEFBR14\n" +
+                    "//ISPFILE  DD    DSN=SGNAMS.REPORT,DISP=(NEW,CATLG),\n" +
+                    "//         BLKSIZE=0,SPACE=(TRK,(3,1)),RECFM=FBA,LRECL=133,UNIT=SYSDA\n" +
+                    "//SYSPRINT DD    SYSOUT=*\n" +
+                    "//SYSIN    DD    *\n" +
+                    "/*\n" +
+                    "//GENSGREP EXEC  ACBJBAOB,\n" +
+                    "//         PLIB1=SYS1.DGTPLIB,\n" +
+                    "//         TABL2=" + uid + ".TEST.ISPTABL\n" +
+                    "//ISPFILE  DD    DSN=SGNAMS.REPORT,DISP=OLD\n" +
+                    "//SYSTSIN  DD    *\n" +
+                    "PROFILE NOPREFIX\n" +
+                    "ISPSTART CMD(ACBQBARJ SGNAMES) +\n" +
+                    "BATSCRW(132) BATSCRD(27) BREDIMAX(3) BDISPMAX(99999999)\n" +
+                    "/*\n" +
+                    "//SYSIN    DD    *\n" +
+                    "STORGRP\n" +
+                    "SGTYPE\n" +
+                    "VIOMXSZ\n" +
+                    "VIOU\n" +
+                    "AUTOMIG\n" +
+                    "MIGSYS\n" +
+                    "ABCK\n" +
+                    "BKPSYS\n" +
+                    "ADMP\n" +
+                    "DUMPSYS\n" +
+                    "OVRFLOW\n" +
+                    "EXTSGNM\n" +
+                    "CPBSGN\n" +
+                    "MIGH\n" +
+                    "MIGL\n" +
+                    "TOTALSPC\n" +
+                    "FREESPC\n" +
+                    "PERFSP\n" +
+                    "BREAKPT\n" +
+                    "TRKHITHRS\n" +
+                    "TRKLOWTHRS\n" +
+                    "OAMDELPRO\n" +
+                    "OAMRETPRO\n" +
+                    "PROCPRIOR\n" +
+                    "TITLE=STATUS OF STORAGE GROUP  AS ON 13/01/10\n" +
+                    "//CPYSGREP EXEC  PGM=IEBGENER\n" +
+                    "//SYSUT1   DD    DSN=SGNAMS.REPORT,DISP=SHR\n" +
+                    "//SYSUT2   DD    SYSOUT=*\n" +
+                    "//SYSIN    DD    DUMMY\n" +
+                    "//SYSPRINT DD    SYSOUT=*\n";
+            return js.submitJCL(session, jcl, 116);
         }
         return "";
     }

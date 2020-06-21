@@ -168,7 +168,6 @@ export default {
       };
       this.isLoading = true;
       Axios.post("/api/sms/display-storage-class", params)
-      //Axios.post("/api/sms/alter-storage-class", params)
         .then(res => {
           this.showResult(res.data);
         })

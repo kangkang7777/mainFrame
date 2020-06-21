@@ -144,7 +144,7 @@ public class SmsController {
      */
     @CrossOrigin(origins = "*", allowCredentials = "true")
     @RequestMapping(value = "/sms/list-storage-class", method = RequestMethod.POST)
-    public ResponseEntity<String> listDataClass(@RequestBody StorageClass storageClass,HttpSession session) {
+    public ResponseEntity<String> listStorageClass(@RequestBody StorageClass storageClass,HttpSession session) {
         if (AuthUtil.notLogin(session)) {
             return ResponseEntity.status(401).body(null);
         }
@@ -161,7 +161,7 @@ public class SmsController {
      */
     @CrossOrigin(origins = "*", allowCredentials = "true")
     @RequestMapping(value = "/sms/list-management-class", method = RequestMethod.POST)
-    public ResponseEntity<String> listDataClass(@RequestBody ManagementClass managementClass,HttpSession session) {
+    public ResponseEntity<String> listManagementClass(@RequestBody ManagementClass managementClass,HttpSession session) {
         if (AuthUtil.notLogin(session)) {
             return ResponseEntity.status(401).body(null);
         }
