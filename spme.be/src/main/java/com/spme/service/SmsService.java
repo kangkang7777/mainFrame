@@ -484,13 +484,13 @@ public class SmsService {
         if (prepareTable2(session)) {
             String uid = session.getAttribute("ZOSMF_Account").toString();
             // add quotes to avoid prefix
-            managementClass.setScds("'" + managementClass.getScds() + "'");
+            //managementClass.setScds("'" + managementClass.getScds() + "'");
             String jcl = getHead(uid) +
                     "//STEP1   EXEC ACBJBAOB,\n" +
                     "//        TABL2=" + uid + ".TEST.ISPTABL\n" +
                     "//SYSUDUMP DD  SYSOUT=*\n" +
                     "//SYSTSIN  DD *\n" +
-                    "PROFILE PREFIX(IBMUSER)\n" +
+                    "PROFILE NOPREFIX\n" +
                     "ISPSTART CMD(ACBQBAJ1 DISPLAY +\n" +
                     "SCDS("+ managementClass.getScds() +") +\n" +
                     "MGMTCLAS("+ managementClass.getMgmtclas() +") +\n" +
